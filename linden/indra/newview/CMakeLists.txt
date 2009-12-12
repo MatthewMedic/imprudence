@@ -76,6 +76,7 @@ set(viewer_SOURCE_FILES
 	lggBeamColorMapFloater.cpp
 	lggBeamsColors.cpp
 	lggBeamMaps.cpp
+	emeraldboobutils.cpp
     llagent.cpp
     llagentaccess.cpp
     llagentdata.cpp
@@ -499,6 +500,7 @@ set(viewer_HEADER_FILES
     lggBeamMapFloater.h
     lggBeamColorMapFloater.h
     lggBeamsColors.h
+	emeraldboobutils.h
     llagent.h
     llagentaccess.h
     llagentdata.h
