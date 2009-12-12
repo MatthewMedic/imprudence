@@ -69,6 +69,8 @@ set(viewer_SOURCE_FILES
     hippoGridManager.cpp
     hippoLimits.cpp
     hippoRestRequest.cpp
+	floaterao.cpp
+	jc_lslviewerbridge.cpp
     jcfloater_animation_list.cpp
     llagent.cpp
     llagentaccess.cpp
@@ -301,6 +303,7 @@ set(viewer_SOURCE_FILES
     llpanelpick.cpp
     llpanelplace.cpp
     llpanelskins.cpp
+	llpanelemerald.cpp
     llpanelvolume.cpp
     llpanelweb.cpp
     llparcelselection.cpp
@@ -485,6 +488,8 @@ set(viewer_HEADER_FILES
     hippoGridManager.h
     hippoLimits.h
     hippoRestRequest.h
+	jc_lslviewerbridge.h
+	floaterao.h
     jcfloater_animation_list.h
     llagent.h
     llagentaccess.h
@@ -719,6 +724,7 @@ set(viewer_HEADER_FILES
     llpanelpick.h
     llpanelplace.h
     llpanelskins.h
+	llpanelemerald.h
     llpanelvolume.h
     llpanelweb.h
     llparcelselection.h
@@ -1066,6 +1072,7 @@ set(viewer_XUI_FILES
     skins/default/colors.xml
     skins/default/colors_base.xml
     skins/default/xui/en-us/alerts.xml
+    skins/default/xui/en-us/floater_ao.xml
     skins/default/xui/en-us/floater_about_land.xml
     skins/default/xui/en-us/floater_about.xml
     skins/default/xui/en-us/floater_active_speakers.xml
@@ -1227,6 +1234,7 @@ set(viewer_XUI_FILES
     skins/default/xui/en-us/panel_place.xml
     skins/default/xui/en-us/panel_preferences_audio.xml
     skins/default/xui/en-us/panel_preferences_chat.xml
+	skins/default/xui/en-us/panel_preferences_emerald.xml
     skins/default/xui/en-us/panel_preferences_general.xml
     skins/default/xui/en-us/panel_preferences_graphics1.xml
     skins/default/xui/en-us/panel_preferences_im.xml
