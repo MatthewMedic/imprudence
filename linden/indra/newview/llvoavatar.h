@@ -49,6 +49,8 @@
 #include "llwearable.h"
 #include "llvoavatardefines.h"
 
+#include "emeraldboobutils.h"
+
 extern const LLUUID ANIM_AGENT_BODY_NOISE;
 extern const LLUUID ANIM_AGENT_BREATHE_ROT;
 extern const LLUUID ANIM_AGENT_EDITING;
@@ -106,6 +108,7 @@ public:
 	void idleUpdateLipSync(bool voice_enabled);
 	void idleUpdateLoadingEffect();
 	void idleUpdateWindEffect();
+	void idleUpdateBoobEffect();
 	void idleUpdateNameTag(const LLVector3& root_pos_last);
 	void idleUpdateRenderCost();
 	void idleUpdateTractorBeam();
@@ -268,6 +271,7 @@ public:
 	void onFirstTEMessageReceived();
 	void updateSexDependentLayerSets( BOOL set_by_user );
 	void dirtyMesh(); // Dirty the avatar mesh
+	LLPolyMesh* getMesh( LLPolyMeshSharedData *shared_data );
 	void hideSkirt();
 
 	virtual void setParent(LLViewerObject* parent);
@@ -347,6 +351,11 @@ public:
 public:
 	void			setLocTexTE( U8 te, LLViewerImage* image, BOOL set_by_user );
 	void			setupComposites();
+
+	typedef std::map<S32,std::string> lod_mesh_map_t;
+	typedef std::map<std::string,lod_mesh_map_t> mesh_info_t;
+
+	static void getMeshInfo (mesh_info_t* mesh_info);
 
 	//--------------------------------------------------------------------
 	// Handling partially loaded avatars (Ruth)
@@ -494,6 +503,59 @@ private:
 	F32				mLastAppearanceBlendTime;
 
 	//--------------------------------------------------------------------
+	// boob bounce stuff
+	//--------------------------------------------------------------------
+
+private:
+	bool			mFirstSetActualBoobGravRan;
+	bool			mFirstSetActualButtGravRan;
+	bool			mFirstSetActualFatGravRan;
+	LLFrameTimer	mBoobBounceTimer;
+	EmeraldAvatarLocalBoobConfig mLocalBoobConfig;
+	EmeraldBoobState mBoobState;
+	EmeraldBoobState mButtState;
+	EmeraldBoobState mFatState;
+
+public:
+	//boob
+	F32				getActualBoobGrav() { return mLocalBoobConfig.actualBoobGrav; }
+	void			setActualBoobGrav(F32 grav)
+	{
+		mLocalBoobConfig.actualBoobGrav = grav;
+		if(!mFirstSetActualBoobGravRan)
+		{
+			mBoobState.boobGrav = grav;
+			mFirstSetActualBoobGravRan = true;
+		}
+	}
+
+	//butt
+	F32				getActualButtGrav() { return mLocalBoobConfig.actualButtGrav; }
+	void			setActualButtGrav(F32 grav)
+	{
+		mLocalBoobConfig.actualButtGrav = grav;
+		if(!mFirstSetActualButtGravRan)
+		{
+			mButtState.boobGrav = grav;
+			mFirstSetActualButtGravRan = true;
+		}
+	}
+
+	//fat
+	F32				getActualFatGrav() { return mLocalBoobConfig.actualFatGrav; }
+	void			setActualFatGrav(F32 grav)
+	{
+		mLocalBoobConfig.actualFatGrav = grav;
+		if(!mFirstSetActualFatGravRan)
+		{
+			mFatState.boobGrav = grav;
+			mFirstSetActualFatGravRan = true;
+		}
+	}
+
+	static EmeraldGlobalBoobConfig sBoobConfig;
+
+	//--------------------------------------------------------------------
 	// Attachments
 	//--------------------------------------------------------------------
 public:
@@ -521,6 +583,7 @@ public:
 	static F32		sLODFactor; // user-settable LOD factor
 	static BOOL		sJointDebug; // output total number of joints being touched for each avatar
 	static BOOL     sDebugAvatarRotation;
+	static F32		sAvMorphTime;
 
 	static S32 sNumVisibleAvatars; // Number of instances of this class
 	
@@ -588,14 +651,14 @@ private:
 	LLVoiceVisualizer*  mVoiceVisualizer;
 	int					mCurrentGesticulationLevel;
 	
+	//lgg i dont know what im doign here
+	static BOOL		sPartsNow;
+	static LLVector3d sBeamLastAt;
+	
 	// Animation timer
 	LLTimer		mAnimTimer;
-	F32			mTimeLast;	
-
-	// Send selection beam info to scripts
-	static int		sPartsNow;
-	static LLVector3d sBeamLastAt;
-
+	F32			mTimeLast;
+protected:	
 	LLPointer<LLHUDEffectSpiral> mBeam;
 	LLFrameTimer mBeamTimer;
 

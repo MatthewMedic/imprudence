@@ -30,6 +30,38 @@
  * $/LicenseInfo$
  */
 
+/* Copyright (c) 2009
+ *
+ * Modular Systems All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or
+ * without modification, are permitted provided that the following
+ * conditions are met:
+ *
+ *   1. Redistributions of source code must retain the above copyright
+ *      notice, this list of conditions and the following disclaimer.
+ *   2. Redistributions in binary form must reproduce the above
+ *      copyright notice, this list of conditions and the following
+ *      disclaimer in the documentation and/or other materials provided
+ *      with the distribution.
+ *   3. Neither the name Modular Systems nor the names of its contributors
+ *      may be used to endorse or promote products derived from this
+ *      software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY MODULAR SYSTEMS AND CONTRIBUTORS “AS IS”
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL MODULAR SYSTEMS OR CONTRIBUTORS
+ * BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+ * THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+
 #include "llviewerprecompiledheaders.h"
 
 #include "llvoavatar.h"
@@ -82,6 +114,7 @@
 #include "llgesturemgr.h" //needed to trigger the voice gesticulations
 #include "llvoiceclient.h"
 #include "llvoicevisualizer.h" // Ventrella
+#include "lggBeamMaps.h"
 
 #if LL_WINDOWS
 	// Disable warning for unreachable code in boost/lexical_cast.hpp for Boost 1.36 -- McCabe
@@ -703,6 +736,11 @@ F32 LLVOAvatar::sLODFactor = 1.f;
 BOOL LLVOAvatar::sUseImpostors = FALSE;
 BOOL LLVOAvatar::sJointDebug = FALSE;
 
+EmeraldGlobalBoobConfig LLVOAvatar::sBoobConfig;
+
+F32 LLVOAvatar::sAvMorphTime			= 0.65f;
+
+
 F32 LLVOAvatar::sUnbakedTime = 0.f;
 F32 LLVOAvatar::sUnbakedUpdateTime = 0.f;
 F32 LLVOAvatar::sGreyTime = 0.f;
@@ -762,6 +800,9 @@ LLVOAvatar::LLVOAvatar(const LLUUID& id,
 	mFullyLoadedInitialized(FALSE),
 	mFullyLoaded(FALSE),
 	mHasBakedHair( FALSE )
+	mFirstSetActualBoobGravRan( false ),
+	//mFirstSetActualButtGravRan( false ),
+	//mFirstSetActualFatGravRan( false )
 {
 	LLMemType mt(LLMemType::MTYPE_AVATAR);
 	//VTResume();  // VTune
@@ -982,6 +1023,16 @@ LLVOAvatar::LLVOAvatar(const LLUUID& id,
 
 	}
 
+	// grab the boob savedparams (prob a better place for this)
+	sBoobConfig.mass             = EmeraldBoobUtils::convertMass(gSavedSettings.getF32("EmeraldBoobMass"));
+	sBoobConfig.hardness         = EmeraldBoobUtils::convertHardness(gSavedSettings.getF32("EmeraldBoobHardness"));
+	sBoobConfig.velMax           = EmeraldBoobUtils::convertVelMax(gSavedSettings.getF32("EmeraldBoobVelMax"));
+	sBoobConfig.velMin           = EmeraldBoobUtils::convertVelMin(gSavedSettings.getF32("EmeraldBoobVelMin"));
+	sBoobConfig.friction         = EmeraldBoobUtils::convertFriction(gSavedSettings.getF32("EmeraldBoobFriction"));
+	sBoobConfig.enabled          = gSavedSettings.getBOOL("EmeraldBreastPhysicsToggle");
+	sBoobConfig.XYInfluence		 = gSavedSettings.getF32("EmeraldBoobXYInfluence");
+
+
 	if (gNoRender)
 	{
 		return;
@@ -1150,6 +1201,47 @@ void LLVOAvatar::dumpScratchTextureByteCount()
 {
 	llinfos << "Scratch Texture GL: " << (sScratchTexBytes/1024) << "KB" << llendl;
 }
+
+// static
+void LLVOAvatar::getMeshInfo (mesh_info_t* mesh_info)
+{
+	if (!mesh_info) return;
+
+	LLVOAvatarXmlInfo::mesh_info_list_t::iterator iter = sAvatarXmlInfo->mMeshInfoList.begin();
+	LLVOAvatarXmlInfo::mesh_info_list_t::iterator end  = sAvatarXmlInfo->mMeshInfoList.end();
+
+	for (; iter != end; ++iter)
+	{
+		LLVOAvatarXmlInfo::LLVOAvatarMeshInfo* avatar_info = (*iter);
+		std::string type = avatar_info->mType;
+		S32         lod  = avatar_info->mLOD;
+		std::string file = avatar_info->mMeshFileName;
+
+		mesh_info_t::iterator iter_info = mesh_info->find(type);
+		if(iter_info == mesh_info->end())
+		{
+			lod_mesh_map_t lod_mesh;
+			lod_mesh.insert(std::pair<S32,std::string>(lod, file));
+			mesh_info->insert(std::pair<std::string,lod_mesh_map_t>(type, lod_mesh));
+		}
+		else
+		{
+			lod_mesh_map_t& lod_mesh = iter_info->second;
+			lod_mesh_map_t::iterator iter_lod = lod_mesh.find(lod);
+			if (iter_lod == lod_mesh.end())
+			{
+				lod_mesh.insert(std::pair<S32,std::string>(lod, file));
+			}
+			else
+			{
+				// Should never happen
+				llwarns << "Duplicate mesh LOD " << type << " " << lod << " " << file << llendl;
+			}
+		}
+	}
+	return;
+}
+
 
 // static
 void LLVOAvatar::dumpBakedStatus()
@@ -2568,6 +2660,7 @@ BOOL LLVOAvatar::idleUpdate(LLAgent &agent, LLWorld &world, const F64 &time)
 	idleUpdateVoiceVisualizer( voice_enabled );
 	idleUpdateMisc( detailed_update );
 	idleUpdateAppearanceAnimation();
+	idleUpdateBoobEffect();
 	idleUpdateLipSync( voice_enabled );
 	idleUpdateLoadingEffect();
 	idleUpdateBelowWater();	// wind effect uses this
@@ -2780,7 +2873,7 @@ void LLVOAvatar::idleUpdateAppearanceAnimation()
 	{
 		ESex avatar_sex = getSex();
 		F32 appearance_anim_time = mAppearanceMorphTimer.getElapsedTimeF32();
-		if (appearance_anim_time >= APPEARANCE_MORPH_TIME)
+		if (appearance_anim_time >= sAvMorphTime)
 		{
 			mAppearanceAnimating = FALSE;
 			for (LLVisualParam *param = getFirstVisualParam(); 
@@ -2800,9 +2893,15 @@ void LLVOAvatar::idleUpdateAppearanceAnimation()
 		}
 		else
 		{
-			F32 blend_frac = calc_bouncy_animation(appearance_anim_time / APPEARANCE_MORPH_TIME);
-			F32 last_blend_frac = calc_bouncy_animation(mLastAppearanceBlendTime / APPEARANCE_MORPH_TIME);
+			F32 blend_frac = calc_bouncy_animation(appearance_anim_time / sAvMorphTime);
+			F32 last_blend_frac = calc_bouncy_animation(mLastAppearanceBlendTime / sAvMorphTime);
 			F32 morph_amt;
+			// if it's over 5 seconds, just forget the bouncy anim
+			if(sAvMorphTime > 5.f)
+			{
+				blend_frac = appearance_anim_time / sAvMorphTime;
+				last_blend_frac = mLastAppearanceBlendTime / sAvMorphTime;
+			}
 			if (last_blend_frac == 1.f)
 			{
 				morph_amt = 1.f;
@@ -2821,6 +2920,8 @@ void LLVOAvatar::idleUpdateAppearanceAnimation()
 			{
 				if (param->getGroup() == VISUAL_PARAM_GROUP_TWEAKABLE)
 				{
+						// so boobs don't go spastic when a shape's changed, but still seems buggy
+						//if(param->getID() != 507)
 					param->animate(morph_amt, mAppearanceAnimSetByUser);
 				}
 			}
@@ -2837,6 +2938,106 @@ void LLVOAvatar::idleUpdateAppearanceAnimation()
 		}
 		dirtyMesh();
 	}
+}
+
+// ------------------------------------------------------------
+// Danny: ZOMG Boob Phsyics go!
+// ------------------------------------------------------------
+void LLVOAvatar::idleUpdateBoobEffect()
+{
+	if(mFirstSetActualBoobGravRan)
+	{
+		// should probably be moved somewhere where it is only called when boobsize changes
+		LLVisualParam *param;
+
+		// BOOBS
+		param = getVisualParam(105); //boob size
+		mLocalBoobConfig.boobSize = param->getCurrentWeight();
+		EmeraldBoobInputs boobInputs;
+		boobInputs.type = 0;
+		boobInputs.chestPosition	= mChestp->getWorldPosition();
+		boobInputs.chestRotation	= mChestp->getWorldRotation();
+		boobInputs.elapsedTime		= mBoobBounceTimer.getElapsedTimeF32();
+		boobInputs.appearanceFlag	= getAppearanceFlag();
+
+
+		EmeraldBoobState newBoobState = EmeraldBoobUtils::idleUpdate(sBoobConfig, mLocalBoobConfig, mBoobState, boobInputs);
+
+		if(mBoobState.boobGrav != newBoobState.boobGrav)
+		{
+			LLVisualParam *param;
+			param = getVisualParam(507);
+
+			ESex avatar_sex = getSex();
+		
+			param->stopAnimating(FALSE);
+			param->setWeight(llclamp(newBoobState.boobGrav+getActualBoobGrav(), -1.5f, 2.f), FALSE);
+			param->apply(avatar_sex);
+			updateVisualParams();
+		}
+
+		mBoobState = newBoobState;
+	}
+	/*
+	if(mFirstSetActualButtGravRan)
+	{
+		// BUTT
+		EmeraldBoobInputs buttInputs;
+		buttInputs.type = 1;
+		buttInputs.chestPosition	= mPelvisp->getWorldPosition();
+		buttInputs.chestRotation	= mPelvisp->getWorldRotation();
+		buttInputs.elapsedTime		= mBoobBounceTimer.getElapsedTimeF32();
+		buttInputs.appearanceFlag	= getAppearanceFlag();
+
+
+		EmeraldBoobState newButtState = EmeraldBoobUtils::idleUpdate(sBoobConfig, mLocalBoobConfig, mButtState, buttInputs);
+
+		if(mButtState.boobGrav != newButtState.boobGrav)
+		{
+			LLVisualParam *param;
+			param = getVisualParam(795);
+
+			ESex avatar_sex = getSex();
+
+			param->stopAnimating(FALSE);
+			param->setWeight(newButtState.boobGrav*0.3f+getActualButtGrav(), FALSE);
+			param->apply(avatar_sex);
+			updateVisualParams();
+		}
+
+		mButtState = newButtState;
+	}
+
+	if(mFirstSetActualFatGravRan)
+	{
+		// FAT
+		EmeraldBoobInputs fatInputs;
+		fatInputs.type = 2;
+		fatInputs.chestPosition		= mPelvisp->getWorldPosition();
+		fatInputs.chestRotation		= mPelvisp->getWorldRotation();
+		fatInputs.elapsedTime		= mBoobBounceTimer.getElapsedTimeF32();
+		fatInputs.appearanceFlag	= getAppearanceFlag();
+
+
+		EmeraldBoobState newFatState = EmeraldBoobUtils::idleUpdate(sBoobConfig, mLocalBoobConfig, mFatState, fatInputs);
+
+		if(mFatState.boobGrav != newFatState.boobGrav)
+		{
+			LLVisualParam *param;
+			param = getVisualParam(157);
+
+			ESex avatar_sex = getSex();
+
+			param->stopAnimating(FALSE);
+			param->setWeight(newFatState.boobGrav*0.3f+getActualFatGrav(), FALSE);
+			param->apply(avatar_sex);
+			updateVisualParams();
+		}
+
+		mFatState = newFatState;
+	}
+	*/
+	
 }
 
 void LLVOAvatar::idleUpdateLipSync(bool voice_enabled)
@@ -3316,11 +3517,15 @@ void LLVOAvatar::idleUpdateTractorBeam()
 		return;
 	}
 
+
+
+	LLColor4U rgb = gLggBeamMaps.getCurrentColor(LLColor4U(gAgent.getEffectColor()));
+
 	// This is only done for yourself (maybe it should be in the agent?)
 	if (!needsRenderBeam() || !mIsBuilt)
 	{
 		mBeam = NULL;
-		if(gSavedSettings.getBOOL("ParticleChat"))
+		if(gSavedSettings.getBOOL("EmeraldParticleChat"))
 		{
 			if(sPartsNow != FALSE)
 			{
@@ -3345,7 +3550,7 @@ void LLVOAvatar::idleUpdateTractorBeam()
 	{
 		// VEFFECT: Tractor Beam
 		mBeam = (LLHUDEffectSpiral *)LLHUDManager::getInstance()->createViewerEffect(LLHUDObject::LL_HUD_EFFECT_BEAM);
-		mBeam->setColor(LLColor4U(gAgent.getEffectColor()));
+		mBeam->setColor( rgb );
 		mBeam->setSourceObject(this);
 		mBeamTimer.reset();
 	}
@@ -3359,7 +3564,8 @@ void LLVOAvatar::idleUpdateTractorBeam()
 			// get point from pointat effect
 			mBeam->setPositionGlobal(gAgent.mPointAt->getPointAtPosGlobal());
 
-			if(gSavedSettings.getBOOL("ParticleChat"))
+			//lgg crap
+			if(gSavedSettings.getBOOL("EmeraldParticleChat"))
 			{
 				if(sPartsNow != TRUE)
 				{
@@ -3430,11 +3636,14 @@ void LLVOAvatar::idleUpdateTractorBeam()
 			}
 
 		}
-		if (mBeamTimer.getElapsedTimeF32() > 0.25f)
+		if (mBeamTimer.getElapsedTimeF32() > gLggBeamMaps.setUpAndGetDuration())
 		{
-			mBeam->setColor(LLColor4U(gAgent.getEffectColor()));
+
+			mBeam->setColor(rgb );
 			mBeam->setNeedsSendToSim(TRUE);
 			mBeamTimer.reset();
+
+			gLggBeamMaps.fireCurrentBeams(mBeam,rgb );
 		}
 	}
 }
@@ -4786,6 +4995,14 @@ void LLVOAvatar::processAnimationStateChanges()
 		// playing, but not signaled, so stop
 		if (found_anim == mSignaledAnimations.end())
 		{
+			if (mIsSelf)
+			{
+				if ((gSavedSettings.getBOOL("EmeraldAOEnabled")) && LLFloaterAO::stopMotion(anim_it->first, FALSE)) // if the AO replaced this anim serverside then stop it serverside
+				{
+//					return TRUE; //no local stop needed
+				}
+			}
+
 			processSingleAnimationStateChange(anim_it->first, FALSE);
 			mPlayingAnimations.erase(anim_it++);
 			continue;
@@ -4804,6 +5021,19 @@ void LLVOAvatar::processAnimationStateChanges()
 		{
 			if (processSingleAnimationStateChange(anim_it->first, TRUE))
 			{
+
+				if (mIsSelf) // AO is only for ME
+				{
+					if (gSavedSettings.getBOOL("EmeraldAOEnabled"))
+					{
+						if (LLFloaterAO::startMotion(anim_it->first, 0,FALSE)) // AO overrides the anim if needed
+						{
+//								return TRUE; // not playing it locally
+						}
+					}
+				}
+
+
 				mPlayingAnimations[anim_it->first] = anim_it->second;
 				++anim_it;
 				continue;
@@ -4922,7 +5152,7 @@ void LLVOAvatar::resetAnimations()
 
 //-----------------------------------------------------------------------------
 // startMotion()
-// id is the asset if of the animation to start
+// id is the asset id of the animation to start
 // time_offset is the offset into the animation at which to start playing
 //-----------------------------------------------------------------------------
 BOOL LLVOAvatar::startMotion(const LLUUID& id, F32 time_offset)
@@ -5962,6 +6192,21 @@ void LLVOAvatar::hideSkirt()
 	mMeshLOD[MESH_ID_SKIRT]->setVisible(FALSE, TRUE);
 }
 
+//-----------------------------------------------------------------------------
+// getMesh( LLPolyMeshSharedData *shared_data )
+//-----------------------------------------------------------------------------
+LLPolyMesh* LLVOAvatar::getMesh( LLPolyMeshSharedData *shared_data )
+{
+	for (polymesh_map_t::iterator i = mMeshes.begin(); i != mMeshes.end(); ++i)
+	{
+		LLPolyMesh* mesh = i->second;
+		if (mesh->getSharedData() == shared_data)
+		{
+			return mesh;
+		}
+	}
+	return NULL;
+}
 
 //-----------------------------------------------------------------------------
 // requestLayerSetUpdate()
@@ -6190,6 +6435,7 @@ void LLVOAvatar::sitOnObject(LLViewerObject *sit_object)
 
 	gPipeline.markMoved(mDrawable, TRUE);
 	mIsSitting = TRUE;
+	LLFloaterAO::ChangeStand();
 // [RLVa:KB] - Checked: 2009-07-08 (RLVa-1.0.0e) | Added: RLVa-0.2.1d
 	#ifdef RLV_EXTENSION_STARTLOCATION
 	if (rlv_handler_t::isEnabled())
@@ -8023,6 +8269,24 @@ void LLVOAvatar::processAvatarAppearance( LLMessageSystem* mesgsys )
 				U8 value;
 				mesgsys->getU8Fast(_PREHASH_VisualParam, _PREHASH_ParamValue, value, i);
 				F32 newWeight = U8_to_F32(value, param->getMinWeight(), param->getMaxWeight());
+
+				if(param->getID() == 507 && newWeight != getActualBoobGrav())
+				{
+					llwarns << "Boob Grav SET to " << newWeight << " for " << getFullname() << llendl;
+					setActualBoobGrav(newWeight);
+				}
+				if(param->getID() == 795 && newWeight != getActualButtGrav())
+				{
+					llwarns << "Butt Grav SET to " << newWeight << " for " << getFullname() << llendl;
+					setActualButtGrav(newWeight);
+				}
+				if(param->getID() == 157 && newWeight != getActualFatGrav())
+				{
+					llwarns << "Fat Grav SET to " << newWeight << " for " << getFullname() << llendl;
+					setActualFatGrav(newWeight);
+				}
+
+
 
 				if (is_first_appearance_message || (param->getWeight() != newWeight))
 				{

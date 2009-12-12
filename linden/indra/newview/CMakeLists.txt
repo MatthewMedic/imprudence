@@ -72,6 +72,10 @@ set(viewer_SOURCE_FILES
 	floaterao.cpp
 	jc_lslviewerbridge.cpp
     jcfloater_animation_list.cpp
+	lggBeamMapFloater.cpp
+	lggBeamColorMapFloater.cpp
+	lggBeamsColors.cpp
+	lggBeamMaps.cpp
     llagent.cpp
     llagentaccess.cpp
     llagentdata.cpp
@@ -491,6 +495,10 @@ set(viewer_HEADER_FILES
 	jc_lslviewerbridge.h
 	floaterao.h
     jcfloater_animation_list.h
+	lggBeamMaps.h
+    lggBeamMapFloater.h
+    lggBeamColorMapFloater.h
+    lggBeamsColors.h
     llagent.h
     llagentaccess.h
     llagentdata.h
@@ -1084,6 +1092,8 @@ set(viewer_XUI_FILES
     skins/default/xui/en-us/floater_avatar_picker.xml
     skins/default/xui/en-us/floater_avatar_textures.xml
     skins/default/xui/en-us/floater_beacons.xml
+	skins/default/xui/en-us/floater_beamcolor.xml
+    skins/default/xui/en-us/floater_beamshape.xml	
     skins/default/xui/en-us/floater_build_options.xml
     skins/default/xui/en-us/floater_bulk_perms.xml
     skins/default/xui/en-us/floater_bumps.xml
