@@ -69,7 +69,7 @@
 
 #define vCatType (LLAssetType::EType)128
 #define vBridgeName "#LSL<->Client Bridge v0.04"
-#define vBridgeOpCat "#Emerald"
+#define vBridgeOpCat "#Bridge"
 
 void cmdline_printchat(std::string message);
 

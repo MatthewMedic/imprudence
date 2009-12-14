@@ -70,6 +70,7 @@ set(viewer_SOURCE_FILES
     hippoLimits.cpp
     hippoRestRequest.cpp
 	floaterao.cpp
+	importtracker.cpp
 	jc_lslviewerbridge.cpp
     jcfloater_animation_list.cpp
 	lggBeamMapFloater.cpp
@@ -489,6 +490,7 @@ endif (LINUX)
 set(viewer_HEADER_FILES
     CMakeLists.txt
     ViewerInstall.cmake
+	importtracker.h
     floaterlogin.h
     hippoGridManager.h
     hippoLimits.h

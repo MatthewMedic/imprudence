@@ -80,6 +80,7 @@
 #include "llinventorymodel.h"
 #include "roles_constants.h"
 #include "lluictrlfactory.h"
+#include "jc_lslviewerbridge.h"
 
 // Statics
 std::list<LLPanelAvatar*> LLPanelAvatar::sAllPanels;
@@ -1246,6 +1247,44 @@ void LLPanelAvatar::setAvatar(LLViewerObject *avatarp)
 	setAvatarID(avatarp->getID(), name, ONLINE_STATUS_YES);
 }
 
+class JCProfileCallback : public JCBridgeCallback
+{
+public:
+	JCProfileCallback(LLUUID avvie)
+	{
+		avatar = avvie;
+	}
+
+	void fire(LLSD data)
+	{
+		//printchat("lol, \n"+std::string(LLSD::dumpXML(data)));
+		//LLPanelAvatar
+		for (std::list<LLPanelAvatar*>::iterator iter = LLPanelAvatar::sAllPanels.begin(); iter != LLPanelAvatar::sAllPanels.end(); ++iter)
+		{
+			LLPanelAvatar* panelp = *iter;
+			if (panelp->mAvatarID == avatar)
+			{
+				BOOL status = atoi(data[0].asString().c_str());
+
+				panelp->childSetVisible("online_yes", TRUE);
+				if(status)
+				{
+					panelp->childSetColor("online_yes",LLColor4::green);
+					panelp->childSetValue("online_yes","Currently Online");
+				}else
+				{
+					panelp->childSetColor("online_yes",LLColor4::red);
+					panelp->childSetValue("online_yes","Currently Offline");
+				}
+			}
+		}
+		//printchat("lol, \n"+std::string(LLSD::dumpXML(data)));
+	}
+
+private:
+	LLUUID avatar;
+};
+
 void LLPanelAvatar::setOnlineStatus(EOnlineStatus online_status)
 {
 	// Online status NO could be because they are hidden
@@ -1258,6 +1297,16 @@ void LLPanelAvatar::setOnlineStatus(EOnlineStatus online_status)
 	}
 
 	mPanelSecondLife->childSetVisible("online_yes", (online_status == ONLINE_STATUS_YES));
+    if(gSavedSettings.getBOOL("EmeraldUseBridgeOnline"))
+		JCLSLBridge::bridgetolsl("online_status|"+mAvatarID.asString(), new JCProfileCallback(mAvatarID));
+
+	// Since setOnlineStatus gets called after setAvatarID
+	// need to make sure that "Offer Teleport" doesn't get set
+	// to TRUE again for yourself
+	if (mAvatarID != gAgent.getID())
+	{
+		childSetVisible("Offer Teleport...",TRUE);
+	}
 
 	BOOL in_prelude = gAgent.inPrelude();
 	if(gAgent.isGodlike())
@@ -1274,18 +1323,6 @@ void LLPanelAvatar::setOnlineStatus(EOnlineStatus online_status)
 	{
 		childSetEnabled("Offer Teleport...", TRUE);
 		childSetToolTip("Offer Teleport...", childGetValue("TeleportNormal").asString());
-	}
-
-	// Since setOnlineStatus gets called after setAvatarID
-	// need to make sure that "Offer Teleport" doesn't get set
-	// to TRUE again for yourself
-	if (mAvatarID != gAgent.getID())
-	{
-		childSetVisible("Offer Teleport...",TRUE);
-	}
-	else
-	{
-		childSetEnabled("Offer Teleport...", FALSE);
 	}
 }
 

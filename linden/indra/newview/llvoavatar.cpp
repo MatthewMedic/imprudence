@@ -78,6 +78,7 @@
 #include "lldriverparam.h"
 #include "lleditingmotion.h"
 #include "llemote.h"
+#include "floaterao.h"
 #include "llfirstuse.h"
 #include "llheadrotmotion.h"
 #include "llhudeffecttrail.h"
@@ -799,10 +800,9 @@ LLVOAvatar::LLVOAvatar(const LLUUID& id,
 	mVisibleChat( FALSE ),
 	mFullyLoadedInitialized(FALSE),
 	mFullyLoaded(FALSE),
-	mHasBakedHair( FALSE )
-	mFirstSetActualBoobGravRan( false ),
-	//mFirstSetActualButtGravRan( false ),
-	//mFirstSetActualFatGravRan( false )
+	mHasBakedHair( FALSE ),
+	mFirstSetActualBoobGravRan( false )
+
 {
 	LLMemType mt(LLMemType::MTYPE_AVATAR);
 	//VTResume();  // VTune
@@ -5092,11 +5092,14 @@ BOOL LLVOAvatar::processSingleAnimationStateChange( const LLUUID& anim_id, BOOL 
 					//}
 					//else
 					{
+						if(gSavedSettings.getBOOL("PlayTypingSound"))
+						{
 						LLUUID sound_id = LLUUID(gSavedSettings.getString("UISndTyping"));
 						gAudiop->triggerSound(sound_id, getID(), 1.0f, LLAudioEngine::AUDIO_TYPE_SFX, char_pos_global);
 					}
 				}
 			}
+		}
 		}
 		else if (anim_id == ANIM_AGENT_SIT_GROUND_CONSTRAINED)
 		{

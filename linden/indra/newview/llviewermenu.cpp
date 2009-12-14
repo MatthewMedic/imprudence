@@ -81,6 +81,7 @@
 #include "llface.h"
 #include "llfirstuse.h"
 #include "llfloater.h"
+#include "floaterao.h"
 #include "llfloaterabout.h"
 #include "llfloaterbuycurrency.h"
 #include "llfloateractivespeakers.h"
@@ -8084,7 +8085,14 @@ class LLWorldChat : public view_listener_t
 		return true;
 	}
 };
-
+class LLAO : public view_listener_t
+{
+	bool handleEvent(LLPointer<LLEvent> event, const LLSD& userdata)
+	{
+		LLFloaterAO::show(NULL);
+		return true;
+	}
+};
 class LLToolsSelectTool : public view_listener_t
 {
 	bool handleEvent(LLPointer<LLEvent> event, const LLSD& userdata)
@@ -10617,6 +10625,7 @@ void initialize_menus()
 	addMenu(new LLViewCheckRenderType(), "View.CheckRenderType");
 	addMenu(new LLViewCheckHUDAttachments(), "View.CheckHUDAttachments");
 	addMenu(new LLViewCheckAdvanced(), "View.CheckAdvanced");
+	addMenu(new LLAO(), "AO");
 
 	// World menu
 	addMenu(new LLWorldChat(), "World.Chat");

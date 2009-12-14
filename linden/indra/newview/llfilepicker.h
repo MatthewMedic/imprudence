@@ -113,6 +113,7 @@ public:
 		FFSAVE_JPEG = 14,
 		FFSAVE_HPA = 15,
 		FFSAVE_TEXT = 16,
+		FFSAVE_BEAM = 17,
 	};
 
 	// open the dialog. This is a modal operation

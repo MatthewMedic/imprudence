@@ -397,13 +397,13 @@ public:
 	void			setFlying(BOOL fly);
 	void			toggleFlying();
 
-	// Does this parcel allow you to fly?
-	BOOL canFly();
-
 	//lgg crap
 	static BOOL			getPhantom();// const				{ return emeraldPhantom; }
 	static void			setPhantom(BOOL phantom);
 	static void			togglePhantom();
+
+	// Does this parcel allow you to fly?
+	BOOL canFly();
 
 	// Animation functions
 	void                    stopCurrentAnimations();

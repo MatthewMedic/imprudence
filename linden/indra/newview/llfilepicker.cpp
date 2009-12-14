@@ -401,6 +401,16 @@ BOOL LLFilePicker::getSaveFile(ESaveFilter filter, const std::string& filename)
 			L"AVI Movie File (*.avi)\0*.avi\0" \
 			L"\0";
 		break;
+	case FFSAVE_BEAM:
+		if (filename.empty())
+		{
+			wcsncpy( mFilesW,L"untitled.xml", FILENAME_BUFFER_SIZE);	/*Flawfinder: ignore*/
+		}
+		mOFN.lpstrDefExt = L"xml";
+		mOFN.lpstrFilter =
+			L"XML File (*.xml)\0*.xml\0" \
+			L"\0";
+		break; 
 	case FFSAVE_ANIM:
 		if (filename.empty())
 		{

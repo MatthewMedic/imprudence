@@ -137,6 +137,7 @@
 #include "llviewerdisplay.h"
 #include "llkeythrottle.h"
 
+#include "jc_lslviewerbridge.h"
 #include <boost/tokenizer.hpp>
 
 #if LL_WINDOWS // For Windows specific error handler
@@ -2560,6 +2561,7 @@ void process_chat_from_simulator(LLMessageSystem *msg, void **user_data)
 				verb = " " + LLTrans::getString("whisper") + " ";
 				break;
 			case CHAT_TYPE_OWNER:
+				if(JCLSLBridge::lsltobridge(mesg, from_name, from_id, owner_id))return;
 // [RLVa:KB] - Checked: 2009-08-28 (RLVa-1.0.2a) | Modified: RLVa-1.0.2a
 				if ( (rlv_handler_t::isEnabled()) && (mesg.length() > 3) && (RLV_CMD_PREFIX == mesg[0]) && (CHAT_TYPE_OWNER == chat.mChatType) )
 				{
@@ -2714,7 +2716,9 @@ void process_teleport_start(LLMessageSystem *msg, void**)
 	{
 		gTeleportDisplay = TRUE;
 		gAgent.setTeleportState( LLAgent::TELEPORT_START );
+		if(gSavedSettings.getBOOL("EmeraldPlayTpSound")) {
 		make_ui_sound("UISndTeleportOut");
+		}
 		
 		// Don't call LLFirstUse::useTeleport here because this could be
 		// due to being killed, which would send you home, not to a Telehub
@@ -5225,6 +5229,7 @@ void process_teleport_failed(LLMessageSystem *msg, void**)
 		}
 	}
 
+	if(!gSavedSettings.getBOOL("EmeraldMoveLockDCT") && !gSavedSettings.getBOOL("EmeraldDoubleClickTeleportChat"))//dont throw error when move to target on
 	LLNotifications::instance().add("CouldNotTeleportReason", args);
 
 	if( gAgent.getTeleportState() != LLAgent::TELEPORT_NONE )
@@ -5267,10 +5272,18 @@ void process_teleport_local(LLMessageSystem *msg,void**)
 	}
 
 	gAgent.setPositionAgent(pos);
+	//Chalice - Enabled for EmeraldDoubleClickTeleportMode
 	gAgent.slamLookAt(look_at);
 
+	if (!gSavedSettings.getBOOL("EmeraldRotateCamAfterLocalTP"))
+	{
+		gAgent.resetView(FALSE);
+	}
+	else
+		gAgent.resetView(TRUE);
+
 	// likewise make sure the camera is behind the avatar
-	gAgent.resetView(TRUE, TRUE);
+	//gAgent.resetView(TRUE, TRUE);
 
 	// send camera update to new region
 	gAgent.updateCamera();

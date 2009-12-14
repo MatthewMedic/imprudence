@@ -185,6 +185,8 @@
 #include "llwaterparammanager.h"
 #include "llagentlanguage.h"
 
+#include "jc_lslviewerbridge.h"
+#include "floaterao.h"
 #if LL_LIBXUL_ENABLED
 #include "llmozlib.h"
 #endif // LL_LIBXUL_ENABLED
@@ -312,6 +314,12 @@ void update_texture_fetch()
 static std::vector<std::string> sAuthUris;
 static S32 sAuthUriNum = -1;
 
+void pass_process_sound_trigger(LLMessageSystem* msg,void**)
+{
+	process_sound_trigger(msg,0);
+//	LLFloaterAvatarList::processSoundTrigger(msg,0);
+	JCLSLBridge::processSoundTrigger(msg,0);
+}
 // Returns false to skip other idle processing. Should only return
 // true when all initialization done.
 bool idle_startup()
@@ -387,6 +395,8 @@ bool idle_startup()
 		// Initialize stuff that doesn't need data from simulators
 		//
 
+		new JCLSLBridge();
+		new AOInvTimer();
 // [RLVa:KB] - Version: 1.22.11 | Checked: 2009-07-10 (RLVa-1.0.0g) | Modified: RLVa-0.2.1d
 		if ( (gSavedSettings.controlExists(RLV_SETTING_MAIN)) && (gSavedSettings.getBOOL(RLV_SETTING_MAIN)) )
 			rlv_handler_t::setEnabled(TRUE);
@@ -927,6 +937,17 @@ bool idle_startup()
 
 		std::string user_windlight_days_path_name(gDirUtilp->getExpandedFilename( LL_PATH_USER_SETTINGS , "windlight/days", ""));
 		LLFile::mkdir(user_windlight_days_path_name.c_str());
+
+		//guna make a beams directior here too /lgg		
+		std::string lgg_beams_path_name(gDirUtilp->getExpandedFilename( LL_PATH_USER_SETTINGS , "beams", ""));
+		LLFile::mkdir(lgg_beams_path_name.c_str());	
+
+		std::string lgg_beamscolors_path_name(gDirUtilp->getExpandedFilename( LL_PATH_USER_SETTINGS , "beamsColors", ""));
+		LLFile::mkdir(lgg_beamscolors_path_name.c_str());	
+
+		//guna make a ircgroups directior here too /lgg		
+		std::string lgg_ircgroups_path_name(gDirUtilp->getExpandedFilename( LL_PATH_PER_SL_ACCOUNT, "IRCGroups", ""));
+		LLFile::mkdir(lgg_ircgroups_path_name.c_str());	
 
 
 		if (show_connect_box)
@@ -2394,7 +2415,7 @@ bool idle_startup()
 		gDisplaySwapBuffers = TRUE;
 
 		LLMessageSystem* msg = gMessageSystem;
-		msg->setHandlerFuncFast(_PREHASH_SoundTrigger,				process_sound_trigger);
+		msg->setHandlerFuncFast(_PREHASH_SoundTrigger,				pass_process_sound_trigger);
 		msg->setHandlerFuncFast(_PREHASH_PreloadSound,				process_preload_sound);
 		msg->setHandlerFuncFast(_PREHASH_AttachedSound,				process_attached_sound);
 		msg->setHandlerFuncFast(_PREHASH_AttachedSoundGainChange,	process_attached_sound_gain_change);

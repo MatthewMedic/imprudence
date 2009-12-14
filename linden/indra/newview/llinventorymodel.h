@@ -312,6 +312,7 @@ public:
 							 LLAssetType::EType preferred_type,
 							 const std::string& name);
 
+	LLUUID findCategoryByName(std::string name);
 	// methods to load up inventory skeleton & meat. These are used
 	// during authentication. return true if everything parsed.
 	typedef std::map<std::string, std::string> response_t;
@@ -323,8 +324,6 @@ public:
 	// relations.
 	void buildParentChildMap();
 
-	// Empty the entire contents
-	void empty();
 	//
 	// Category accounting.
 	//
@@ -390,8 +389,10 @@ protected:
 	// preferred type. Returns LLUUID::null if not found
  	LLUUID findCatUUID(LLAssetType::EType preferred_type);
 
-
-
+public:
+	// Empty the entire contents
+	void empty();
+protected:
 	// Given the current state of the inventory items, figure out the
 	// clone information. *FIX: This is sub-optimal, since we can
 	// insert this information snurgically, but this makes sure the

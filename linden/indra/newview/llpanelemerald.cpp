@@ -65,8 +65,8 @@
 #include "llweb.h" // [$PLOTR$/]
 #include "lggBeamColorMapFloater.h"
 #include "llsliderctrl.h"
-#include "mfdKeywordFloater.h"
-#include "lggHunSpell_wrapper.h"
+//#include "mfdKeywordFloater.h"
+//#include "lggHunSpell_wrapper.h"
 
 ////////begin drop utility/////////////
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -364,12 +364,12 @@ void LLPanelEmerald::refresh()
 	if(comboBox != NULL) 
 	{
 		comboBox->removeall();
-		std::vector<std::string> names = glggHunSpell->getDicts();
+/*		std::vector<std::string> names = glggHunSpell->getDicts();
 		for(int i=0; i<(int)names.size(); i++) 
 		{
 			comboBox->add(names[i]);
 		}
-		comboBox->setSimple(gSavedSettings.getString("EmeraldSpellBase"));
+*/		comboBox->setSimple(gSavedSettings.getString("EmeraldSpellBase"));
 	}
 	comboBox = getChild<LLComboBox>("EmSpell_Avail");
 	if(comboBox != NULL) 
@@ -377,12 +377,12 @@ void LLPanelEmerald::refresh()
 		comboBox->removeall();
 
 		comboBox->add("");
-		std::vector<std::string> names = glggHunSpell->getAvailDicts();
+/*		std::vector<std::string> names = glggHunSpell->getAvailDicts();
 		for(int i=0; i<(int)names.size(); i++) 
 		{
 			comboBox->add(names[i]);
 		}
-		comboBox->setSimple(std::string(""));
+*/		comboBox->setSimple(std::string(""));
 	}
 	comboBox = getChild<LLComboBox>("EmSpell_Installed");
 	if(comboBox != NULL) 
@@ -390,12 +390,12 @@ void LLPanelEmerald::refresh()
 		comboBox->removeall();
 
 		comboBox->add("");
-		std::vector<std::string> names = glggHunSpell->getInstalledDicts();
+/*		std::vector<std::string> names = glggHunSpell->getInstalledDicts();
 		for(int i=0; i<(int)names.size(); i++) 
 		{
 			comboBox->add(names[i]);
 		}
-		comboBox->setSimple(std::string(""));
+*/		comboBox->setSimple(std::string(""));
 	}
 
 	//epic hax (TODO: make this less hax)
@@ -501,7 +501,7 @@ void LLPanelEmerald::onCustomBeam(void* data)
 }
 void LLPanelEmerald::onKeywordAllertButton(void * data)
 {
-	MfdKeywordFloaterStart::show(true,data);
+	//MfdKeywordFloaterStart::show(true,data);
 }
 void LLPanelEmerald::onCustomBeamColor(void* data)
 {
@@ -512,7 +512,7 @@ void LLPanelEmerald::onSpellAdd(void* data)
 	LLPanelEmerald* panel = (LLPanelEmerald*)data;
 	if(panel)
 	{
-		glggHunSpell->addButton(panel->childGetValue("EmSpell_Avail").asString());
+		// glggHunSpell->addButton(panel->childGetValue("EmSpell_Avail").asString());
 	}
 	panel->refresh();
 }
@@ -521,17 +521,17 @@ void LLPanelEmerald::onSpellRemove(void* data)
 	LLPanelEmerald* panel = (LLPanelEmerald*)data;
 	if(panel)
 	{
-		glggHunSpell->removeButton(panel->childGetValue("EmSpell_Installed").asString());
+		// glggHunSpell->removeButton(panel->childGetValue("EmSpell_Installed").asString());
 	}
 	panel->refresh();
 }
 void LLPanelEmerald::onSpellGetMore(void* data)
 {
-	glggHunSpell->getMoreButton();
+	// glggHunSpell->getMoreButton();
 }
 void LLPanelEmerald::onSpellEditCustom(void* data)
 {
-	glggHunSpell->editCustomButton();
+	// glggHunSpell->editCustomButton();
 }
 void LLPanelEmerald::onStealth(void* data)
 {
@@ -606,7 +606,7 @@ void LLPanelEmerald::onSpellBaseComboBoxCommit(LLUICtrl* ctrl, void* userdata)
 	LLComboBox* box = (LLComboBox*)ctrl;
 	if(box)
 	{
-		glggHunSpell->newDictSelection(box->getValue().asString());
+//		glggHunSpell->newDictSelection(box->getValue().asString());
 		LLPanelEmerald* panel = (LLPanelEmerald*)userdata;//box->getParent();
 		if(panel)panel->refresh();
 

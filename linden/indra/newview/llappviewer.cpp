@@ -1898,6 +1898,7 @@ bool LLAppViewer::initConfiguration()
     // achieve this. For now...
 
     // *NOTE:Mani The command line parser parses tokens and is 
+    // setup to bail after parsing the '--url' option or the 
     // first option specified without a '--option' flag (or
     // any other option that uses the 'last_option' setting - 
     // see LLControlGroupCLP::configure())
