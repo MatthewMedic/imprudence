@@ -1,6 +1,17 @@
 <?xml version="1.0" ?>
 <llsd>
 	<map>
+		<key>EmeraldDisableMinZoomDist</key>
+		<map>
+			<key>Comment</key>
+			<string>Disable the constraint on the closest distance the camera is allowed to get to an object.</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>Boolean</string>
+			<key>Value</key>
+			<integer>0</integer>
+		</map>
 		<key>RestrainedLife</key>
 		<map>
 			<key>Comment</key>
@@ -229,7 +240,7 @@
 			<key>Type</key>
 			<string>Boolean</string>
 			<key>Value</key>
-			<integer>0</integer>
+			<integer>1</integer>
 		</map>
 		<key>AllowTapTapHoldRun</key>
 		<map>
@@ -2347,7 +2358,7 @@
 		<key>Cursor3D</key>
 		<map>
 			<key>Comment</key>
-			<string>Tread Joystick values as absolute positions (not deltas).</string>
+			<string>Treat Joystick values as absolute positions (not deltas).</string>
 			<key>Persist</key>
 			<integer>1</integer>
 			<key>Type</key>
@@ -3328,7 +3339,7 @@
 				<real>1.0</real>
 			</array>
 		</map>
-<key>EmeraldBoobMass</key>
+		<key>EmeraldBoobMass</key>
 		<map>
 			<key>Comment</key>
 			<string>Mass of boobs.</string>
@@ -3361,17 +3372,17 @@
 			<key>Value</key>
 			<integer>0</integer>
 		</map>
-    <key>EmeraldBreastSportsBra</key>
-    <map>
-      <key>Comment</key>
-      <string>allows disabling the physics for 1 av, in case their outfit looks wrong with it on</string>
-      <key>Persist</key>
-      <integer>1</integer>
-      <key>Type</key>
-      <string>Boolean</string>
-      <key>Value</key>
-      <integer>0</integer>
-    </map>
+		<key>EmeraldBreastSportsBra</key>
+		<map>
+			<key>Comment</key>
+			<string>allows disabling the physics for 1 av, in case their outfit looks wrong with it on</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>Boolean</string>
+			<key>Value</key>
+			<integer>0</integer>
+		</map>
 		<key>EmeraldBoobVelMax</key>
 		<map>
 			<key>Comment</key>
@@ -3416,7 +3427,84 @@
 			<key>Value</key>
 			<real>0.1</real>
 		</map>
-	<key>EmeraldAOEnabled</key>
+		<key>EmeraldAddSecondsInLog</key>
+		<map>
+			<key>Comment</key>
+			<string>Add the seconds to the timestamp in the logs</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>Boolean</string>
+			<key>Value</key>
+			<integer>0</integer>
+		</map>
+		<key>EmeraldAddSecondsInHistory</key>
+		<map>
+			<key>Comment</key>
+			<string>Add the seconds to the timestamp in all the chat windows</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>Boolean</string>
+			<key>Value</key>
+			<integer>0</integer>
+		</map>
+		<key>EmeraldAgentUpdatesPerSecond</key>
+		<map>
+			<key>Comment</key>
+			<string>Sets the amount of updates to send per second.</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>F32</string>
+			<key>Value</key>
+			<real>10.0</real>
+		</map>
+		<key>EmeraldAllowMUpose</key>
+		<map>
+			<key>Comment</key>
+			<string>Allow MU* pose style in chat and IM (with ':' as a synonymous to '/me ')</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>Boolean</string>
+			<key>Value</key>
+			<integer>0</integer>
+		</map>
+		<key>EmeraldSpellDisplay</key>
+		<map>
+			<key>Comment</key>
+			<string>Turn on to show mispelled text in red</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>Boolean</string>
+			<key>Value</key>
+			<integer>0</integer>
+		</map>
+		<key>EmeraldSpellInstalled</key>
+		<map>
+			<key>Comment</key>
+			<string>The list of installed dictionaries</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>String</string>
+			<key>Value</key>
+			<string>EN_SL</string>
+		</map>
+		<key>EmeraldSpellBase</key>
+		<map>
+			<key>Comment</key>
+			<string>The base dictionary to spell check with</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>String</string>
+			<key>Value</key>
+			<string>English (United States of America)</string>
+		</map>
+		<key>EmeraldAOEnabled</key>
 		<map>
 			<key>Comment</key>
 			<string>Turn on Animation Overrider</string>
@@ -3498,6 +3586,182 @@
 				<integer>100</integer>
 			</array>
 		</map>
+		<key>EmeraldAppearanceAnimate</key>
+		<map>
+			<key>Comment</key>
+			<string>Play appearance anim when entering appearance mode?</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>Boolean</string>
+			<key>Value</key>
+			<integer>1</integer>
+		</map>
+		<key>EmeraldAppearanceForceStand</key>
+		<map>
+			<key>Comment</key>
+			<string>Unsit avatar when entering appearance mode?</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>Boolean</string>
+			<key>Value</key>
+			<integer>1</integer>
+		</map>
+		<key>EmeraldAvatarAgeAlert</key>
+		<map>
+			<key>Comment</key>
+			<string>Enables the avatar age alert</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>Boolean</string>
+			<key>Value</key>
+			<real>0</real>
+		</map>
+		<key>EmeraldAvatarAgeAlertDays</key>
+		<map>
+			<key>Comment</key>
+			<string>You will be notified when an avatar younger than X days appears on the radar</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>F32</string>
+			<key>Value</key>
+			<real>3</real>
+		</map>
+		<key>EmeraldAvatarAgeAlertSoundUUID</key>
+		<map>
+			<key>Comment</key>
+			<string>The signal sound for the avatar age alert</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>String</string>
+			<key>Value</key>
+			<string>5fcbee19-8dd4-2888-d6bf-14310d2f7c9f</string>
+		</map>
+		<key>EmeraldCryoDetection</key>
+		<map>
+			<key>Comment</key>
+			<string>Passivly scan for cryo life using advanced detection</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>Boolean</string>
+			<key>Value</key>
+			<integer>0</integer>
+		</map>
+		<key>EmeraldModerateAllEstates</key>
+		<map>
+			<key>Comment</key>
+			<string>wut</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>Boolean</string>
+			<key>Value</key>
+			<real>0</real>
+		</map>
+		<key>EmeraldModerateConfirm</key>
+		<map>
+			<key>Comment</key>
+			<string>wut</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>Boolean</string>
+			<key>Value</key>
+			<real>1</real>
+		</map>
+		<key>EmeraldAllowPhantomToggle</key>
+		<map>
+			<key>Comment</key>
+			<string>Do you want to be able to hit ctrl alt p to become visably phantom?</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>Boolean</string>
+			<key>Value</key>
+			<integer>1</integer>
+		</map>
+		<key>EmeraldAllowSitToggle</key>
+		<map>
+			<key>Comment</key>
+			<string>Do you want to be able to hit ctrl-alt-s to ground sit anywhere?</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>Boolean</string>
+			<key>Value</key>
+			<integer>1</integer>
+		</map>
+		<key>EmeraldAlwaysFly</key>
+		<map>
+			<key>Comment</key>
+			<string>Do you want to always be able to fly, even in fly restricted zones?</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>Boolean</string>
+			<key>Value</key>
+			<integer>0</integer>
+		</map>
+		<key>EmeraldAutoCloseOOC</key>
+		<map>
+			<key>Comment</key>
+			<string>Auto-close OOC chat (i.e. add \"))\" if not found and \"((\" was used)</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>Boolean</string>
+			<key>Value</key>
+			<integer>0</integer>
+		</map>
+		<key>EmeraldAvatarListKeepOpen</key>
+		<map>
+			<key>Comment</key>
+			<string>Keeps Avatar List updates running in background</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>Boolean</string>
+			<key>Value</key>
+			<integer>0</integer>
+		</map>
+		<key>EmeraldAvatarXModifier</key>
+		<map>
+			<key>Comment</key>
+			<string>wat</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>F32</string>
+			<key>Value</key>
+			<real>0.0</real>
+		</map>
+		<key>EmeraldAvatarYModifier</key>
+		<map>
+			<key>Comment</key>
+			<string>wat</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>F32</string>
+			<key>Value</key>
+			<real>0.0</real>
+		</map>
+		<key>EmeraldAvatarZModifier</key>
+		<map>
+			<key>Comment</key>
+			<string>wat</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>F32</string>
+			<key>Value</key>
+			<real>0.0</real>
+		</map>
 		<key>EmeraldBeamShape</key>
 		<map>
 			<key>Comment</key>
@@ -3508,6 +3772,17 @@
 			<string>String</string>
 			<key>Value</key>
 			<string>Emerald</string>
+		</map>
+		<key>EmeraldPurgeInvCache</key>
+		<map>
+			<key>Comment</key>
+			<string>agent id to purge, if purge is desired</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>String</string>
+			<key>Value</key>
+			<string></string>
 		</map>
 		<key>EmeraldBeamColorFile</key>
 		<map>
@@ -3530,6 +3805,319 @@
 			<string>F32</string>
 			<key>Value</key>
 			<real>1.0</real>
+		</map>
+		<key>EmeraldBlockClickSit</key>
+		<map>
+			<key>Comment</key>
+			<string>Whether or not to block left-click sitting on things</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>Boolean</string>
+			<key>Value</key>
+			<integer>0</integer>
+		</map>
+		<key>EmeraldBlockMapTps</key>
+		<map>
+			<key>Comment</key>
+			<string>Whether or not to block all script map tps</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>Boolean</string>
+			<key>Value</key>
+			<integer>0</integer>
+		</map>
+		<key>EmeraldBroadcastEffects</key>
+		<map>
+			<key>Comment</key>
+			<string>Whether or not to broadcast your head and point at movements</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>Boolean</string>
+			<key>Value</key>
+			<integer>1</integer>
+		</map>
+		<key>EmeraldBroadcastPointers</key>
+		<map>
+			<key>Comment</key>
+			<string>Disable to prevent broadcasting your Lookat target (Enabled by default)</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>Boolean</string>
+			<key>Value</key>
+			<integer>1</integer>
+		</map>
+		<key>EmeraldBroadcastPointers2</key>
+		<map>
+			<key>Comment</key>
+			<string>Disable to prevent broadcasting your Pointat target (Enabled by default)</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>Boolean</string>
+			<key>Value</key>
+			<integer>1</integer>
+		</map>
+		<key>EmeraldBuildPrefs_Xsize</key>
+		<map>
+			<key>Comment</key>
+			<string>Default Size For New Objects to be created X</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>F32</string>
+			<key>Value</key>
+			<real>0.5</real>
+		</map>
+		<key>EmeraldBuildPrefs_Ysize</key>
+		<map>
+			<key>Comment</key>
+			<string>Default Size For New Objects to be created Y</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>F32</string>
+			<key>Value</key>
+			<real>0.5</real>
+		</map>
+		<key>EmeraldBuildPrefs_Zsize</key>
+		<map>
+			<key>Comment</key>
+			<string>Default Size For New Objects to be created Z</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>F32</string>
+			<key>Value</key>
+			<real>0.5</real>
+		</map>
+		<key>EmeraldBuildPrefs_Phantom</key>
+		<map>
+			<key>Comment</key>
+			<string>Default Setting For New Objects to be created, phantom flag</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>Boolean</string>
+			<key>Value</key>
+			<integer>0</integer>
+		</map>
+		<key>EmeraldBuildPrefs_Temporary</key>
+		<map>
+			<key>Comment</key>
+			<string>Default Setting For New Objects to be created, temp flag</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>Boolean</string>
+			<key>Value</key>
+			<integer>0</integer>
+		</map>
+		<key>EmeraldBuildPrefs_Physical</key>
+		<map>
+			<key>Comment</key>
+			<string>Default Setting For New Objects to be created, physical flag</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>Boolean</string>
+			<key>Value</key>
+			<integer>0</integer>
+		</map>
+		<key>EmeraldBuildPrefs_Material</key>
+		<map>
+			<key>Comment</key>
+			<string>Default Setting For New Objects to be created, physical flag</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>String</string>
+			<key>Value</key>
+			<string>Wood</string>
+		</map>
+		<key>EmeraldBuildPrefs_Color</key>
+		<map>
+			<key>Comment</key>
+			<string>Color of new objects textures</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>Color4</string>
+			<key>Value</key>
+			<array>
+				<real>1.0</real>
+				<real>1.0</real>
+				<real>1.0</real>
+				<real>1.0</real>
+			</array>
+		</map>
+		<key>EmeraldBuildPrefs_Texture</key>
+		<map>
+			<key>Comment</key>
+			<string>Texture used as 'Default' for new object created</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>String</string>
+			<key>Value</key>
+			<string>89556747-24cb-43ed-920b-47caed15465f</string>
+		</map>
+		<key>EmeraldBuildPrefs_Alpha</key>
+		<map>
+			<key>Comment</key>
+			<string>Default Alpha For New Objects to be created</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>F32</string>
+			<key>Value</key>
+			<real>0.0</real>
+		</map>
+		<key>EmeraldBuildPrefs_Glow</key>
+		<map>
+			<key>Comment</key>
+			<string>Default Glow For New Objects to be created</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>F32</string>
+			<key>Value</key>
+			<real>0.0</real>
+		</map>
+		<key>EmeraldBuildPrefs_FullBright</key>
+		<map>
+			<key>Comment</key>
+			<string>Default Setting For New Objects to be created, whether textures are full bright</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>Boolean</string>
+			<key>Value</key>
+			<integer>0</integer>
+		</map>
+		<key>EmeraldBuildPrefs_Shiny</key>
+		<map>
+			<key>Comment</key>
+			<string>Shiny level used as 'Default' for new objects created</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>String</string>
+			<key>Value</key>
+			<string>None</string>
+		</map>
+		<key>EmeraldBuildPrefs_PivotX</key>
+		<map>
+			<key>Comment</key>
+			<string>Pivot point on the X axis</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>F32</string>
+			<key>Value</key>
+			<real>50</real>
+		</map>
+		<key>EmeraldBuildPrefs_PivotY</key>
+		<map>
+			<key>Comment</key>
+			<string>Pivot point on the Y axis</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>F32</string>
+			<key>Value</key>
+			<real>50</real>
+		</map>
+		<key>EmeraldBuildPrefs_PivotZ</key>
+		<map>
+			<key>Comment</key>
+			<string>Pivot point on the Z axis</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>F32</string>
+			<key>Value</key>
+			<real>50</real>
+		</map>
+		<key>EmeraldBuildPrefs_PivotIsPercent</key>
+		<map>
+			<key>Comment</key>
+			<string>Consider the Pivot points values as a percentage</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>Boolean</string>
+			<key>Value</key>
+			<integer>1</integer>
+		</map>
+		<key>EmeraldBuildPrefs_ActualRoot</key>
+		<map>
+			<key>Comment</key>
+			<string>Show the axis on the actual root of a linkset instead of mass center</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>Boolean</string>
+			<key>Value</key>
+			<integer>0</integer>
+		</map>
+		<key>EmeraldCardSpamEnabled</key>
+		<map>
+			<key>Comment</key>
+			<string>Enables CallingCard Spam Prevention</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>Boolean</string>
+			<key>Value</key>
+			<integer>1</integer>
+		</map>
+		<key>EmeraldChangeColorOnClient</key>
+		<map>
+			<key>Comment</key>
+			<string>Whether or not to change tag color based on client</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>Boolean</string>
+			<key>Value</key>
+			<integer>1</integer>
+		</map>
+		<key>EmeraldClickSendTouchPos</key>
+		<map>
+			<key>Comment</key>
+			<string>Enable sending clicked points</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>Boolean</string>
+			<key>Value</key>
+			<integer>0</integer>
+		</map>
+		<key>EmeraldClientTagDisplay</key>
+		<map>
+			<key>Comment</key>
+			<string>Whether or not to change tag color based on client</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>Boolean</string>
+			<key>Value</key>
+			<integer>1</integer>
+		</map>
+		<key>EmeraldClothingLayerProtection</key>
+		<map>
+			<key>Comment</key>
+			<string>Overwrites clothing layers to sim in order to protect your worn items from being as easily stolen</string>
+			<key>Persist</key>
+			<integer>1</integer>
+			<key>Type</key>
+			<string>Boolean</string>
+			<key>Value</key>
+			<integer>1</integer>
 		</map>
 		<key>EmeraldBuildBridge</key>
 		<map>
