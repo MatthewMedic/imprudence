@@ -65,19 +65,21 @@ include_directories(
     )
 
 set(viewer_SOURCE_FILES
+    chatbar_as_cmdline.cpp
     floaterlogin.cpp
     hippoGridManager.cpp
     hippoLimits.cpp
     hippoRestRequest.cpp
-	floaterao.cpp
-	importtracker.cpp
-	jc_lslviewerbridge.cpp
+    floaterao.cpp
+    importtracker.cpp
+    jc_lslviewerbridge.cpp
+    floaterstatslogging.cpp
     jcfloater_animation_list.cpp
-	lggBeamMapFloater.cpp
-	lggBeamColorMapFloater.cpp
-	lggBeamsColors.cpp
-	lggBeamMaps.cpp
-	emeraldboobutils.cpp
+    lggBeamMapFloater.cpp
+    lggBeamColorMapFloater.cpp
+    lggBeamsColors.cpp
+    lggBeamMaps.cpp
+    emeraldboobutils.cpp
     llagent.cpp
     llagentaccess.cpp
     llagentdata.cpp
@@ -309,7 +311,7 @@ set(viewer_SOURCE_FILES
     llpanelpick.cpp
     llpanelplace.cpp
     llpanelskins.cpp
-	llpanelemerald.cpp
+    llpanelemerald.cpp
     llpanelvolume.cpp
     llpanelweb.cpp
     llparcelselection.cpp
@@ -490,19 +492,21 @@ endif (LINUX)
 set(viewer_HEADER_FILES
     CMakeLists.txt
     ViewerInstall.cmake
-	importtracker.h
+    chatbar_as_cmdline.h
+    importtracker.h
     floaterlogin.h
     hippoGridManager.h
     hippoLimits.h
     hippoRestRequest.h
-	jc_lslviewerbridge.h
-	floaterao.h
+    jc_lslviewerbridge.h
+    floaterao.h
+    floaterstatslogging.h
     jcfloater_animation_list.h
-	lggBeamMaps.h
+    lggBeamMaps.h
     lggBeamMapFloater.h
     lggBeamColorMapFloater.h
     lggBeamsColors.h
-	emeraldboobutils.h
+    emeraldboobutils.h
     llagent.h
     llagentaccess.h
     llagentdata.h
@@ -1187,6 +1191,7 @@ set(viewer_XUI_FILES
     skins/default/xui/en-us/floater_snapshot.xml
     skins/default/xui/en-us/floater_sound_preview.xml
     skins/default/xui/en-us/floater_statistics.xml
+	skins/default/xui/en-us/floater_stats_logging.xml
     skins/default/xui/en-us/floater_telehub.xml
     skins/default/xui/en-us/floater_test.xml
     skins/default/xui/en-us/floater_texture_ctrl.xml
